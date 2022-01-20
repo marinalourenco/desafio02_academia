@@ -1,24 +1,44 @@
 import './main.css';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useFormik } from 'formik';
 
 function App() {
-  
-  const [nomeLivro, setNomeLivro] = useState("")
-  const [nomeAutor, setNomeAutor] = useState("")
-  const [ano, setAno] = useState(0)
   const [livros, setLivros] = useState([]);
-  
-  const handleSaveBook = (e) => {
-       e.preventDefault()
+  const formik = useFormik({
+    initialValues: {
+      nomeLivro:"",
+      nomeAutor: "",
+      ano:0
+    },
+    onSubmit: (values) => {
+      console.log(values)
       const data = {
         id: uuidv4(),
-        nomeLivro,
-        nomeAutor,
-        ano
+        nomeLivro: values.nomeLivro,
+        nomeAutor: values.nomeAutor,
+        ano: values.ano
       }
       setLivros(state => [...state, data])
-  }
+
+    }
+  })
+  
+  //const [nomeLivro, setNomeLivro] = useState("")
+  //const [nomeAutor, setNomeAutor] = useState("")
+  //const [ano, setAno] = useState(0)
+  //const [livros, setLivros] = useState([]);
+  
+ // const handleSaveBook = (e) => {
+       //e.preventDefault()
+       //const data = {
+       // id: uuidv4(),
+       // nomeLivro,
+        //nomeAutor,
+        //ano
+     // }
+      //setLivros(state => [...state, data])
+  //}
 
   return (
 
@@ -49,23 +69,26 @@ function App() {
             </div>
           </section>
         <section>
-          <form onSubmit={handleSaveBook}>
+          <form onSubmit={formik.onSubmit}>
       <input 
+                name="nomeLivro"
                 placeholder="Nome do Livro"
-                value={nomeLivro}
-                onChange={ e => setNomeLivro(e.target.value)}
+                value={formik.values.nomeLivro}
+                onChange={formik.handleChange}
                 />
            
       <input 
+                name="nomeAutor"
                 placeholder="Nome do Autor"
-                value={nomeAutor}
-                onChange={ e => setNomeAutor(e.target.value)}
+                value={formik.values.nomeAutor}
+                onChange={formik.handleChange}
                 />
 
       <input 
+                name="Ano"
                 placeholder="Ano de Publicação"
-                value={ano}
-                onChange={ e => setAno(e.target.value)}
+                value={formik.values.ano}
+                onChange={formik.handleChange}
                 />
 
       <button className="button" type="submit">Cadastrar</button>
