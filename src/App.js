@@ -2,6 +2,22 @@ import './main.css';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useFormik } from 'formik';
+import * as Yup from 'yup';
+
+const validationSchema = Yup.object().shape({
+  nomeLivro: Yup.string()
+    .min(2, 'muito curto')
+    .max(50, 'muito longo')
+    .required('requerido'),
+  nomeAutor: Yup.string()
+    .min(2, 'muito curto')
+    .max(50, 'muito longo')
+    .required('requerido'),
+  anoPublicao: Yup.string()
+    .min(2, 'muito curto')
+    .max(5, 'muito longo')
+    .required('requerido'),
+});
 
 function App() {
   const [livros, setLivros] = useState([]);
@@ -9,15 +25,16 @@ function App() {
     initialValues: {
       nomeLivro:"",
       nomeAutor: "",
-      ano:0
+      anoPublicao:"",
     },
+    validationSchema,
     onSubmit: (values) => {
-      console.log(values)
+      //alert(JSON.stringify(values, null, 2));
       const data = {
         id: uuidv4(),
         nomeLivro: values.nomeLivro,
         nomeAutor: values.nomeAutor,
-        ano: values.ano
+        anoPublicao: values.anoPublicao,
       }
       setLivros(state => [...state, data])
 
@@ -61,7 +78,7 @@ function App() {
               <tr>
                 <td>{elemento.nomeLivro}</td>
                 <td>{elemento.nomeAutor}</td>
-                <td>{elemento.ano}</td>
+                <td>{elemento.anoPublicao}</td>
               </tr>
             ))}
             </tbody>
@@ -69,28 +86,37 @@ function App() {
             </div>
           </section>
         <section>
-          <form onSubmit={formik.onSubmit}>
-      <input 
-                name="nomeLivro"
-                placeholder="Nome do Livro"
-                value={formik.values.nomeLivro}
-                onChange={formik.handleChange}
-                />
-           
-      <input 
-                name="nomeAutor"
-                placeholder="Nome do Autor"
-                value={formik.values.nomeAutor}
-                onChange={formik.handleChange}
-                />
-
-      <input 
-                name="Ano"
-                placeholder="Ano de Publicação"
-                value={formik.values.ano}
-                onChange={formik.handleChange}
-                />
-
+          <form onSubmit={formik.handleSubmit}>
+        <input 
+          id="nomeLivro"
+          name="nomeLivro"
+          placeholder="Nome do Livro"
+          value={formik.values.nomeLivro}
+          onChange={formik.handleChange}
+        />
+          {formik.errors.nomeLivro && formik.touched.nomeLivro 
+          ? <div className="error">{formik.errors.nomeLivro}</div> 
+          : null}
+        <input 
+          id="nomeAutor"
+          name="nomeAutor"
+          placeholder="Nome do Autor"
+          value={formik.values.nomeAutor}
+          onChange={formik.handleChange}
+        />
+          {formik.errors.nomeAutor && formik.touched.nomeAutor 
+          ? <div className="error">{formik.errors.nomeAutor}</div> 
+          : null}
+        <input 
+          id="anoPublicao"
+          name="anoPublicao"
+          placeholder="Ano de Publição"
+          value={formik.values.anoPublicao}
+          onChange={formik.handleChange}
+        />
+        {formik.errors.anoPublicao && formik.touched.anoPublicao 
+        ? <div className="error">{formik.errors.anoPublicao}</div> 
+        : null}
       <button className="button" type="submit">Cadastrar</button>
       </form>
         </section>
